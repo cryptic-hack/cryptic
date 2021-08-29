@@ -294,6 +294,12 @@ const themes = {
     text_color: "FFFFFF",
     bg_color: "2C2F33",
   },
+  atom_one_dark: {
+    title_color: "61afef",
+    icon_color: "98c379",
+    text_color: "e3e5e8",
+    bg_color: "282c34",
+  }
 };
 
 module.exports = themes;
