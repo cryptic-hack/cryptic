@@ -19,6 +19,7 @@ import { wakatimeCardLocales } from "../translations.js";
  * --experimental-json-modules flag.
  */
 import { createRequire } from "module";
+
 const require = createRequire(import.meta.url);
 const languageColors = require("../common/languageColors.json"); // now works
 
@@ -48,7 +49,7 @@ const createCompactLangNode = ({ lang, totalSize, x, y }) => {
   return `
     <g transform="translate(${x}, ${y})">
       <circle cx="5" cy="6" r="5" fill="${color}" />
-      <text data-testid="lang-name" x="15" y="10" class='lang-name'>
+      <text data-testid="lang-name" x="15" y="10" class="lang-name">
         ${lang.name} - ${lang.text}
       </text>
     </g>
@@ -159,7 +160,20 @@ const recalculatePercentages = (languages) => {
  * @returns {string} WakaTime card SVG.
  */
 const renderWakatimeCard = (stats = {}, options = { hide: [] }) => {
-  let { languages } = stats;
+  const { languages, editors, categories, operating_systems } = stats;
+
+  if (options.graph === "editor") {
+    return renderItemCard(editors, options);
+  } else if (options.graph === "category") {
+    return renderItemCard(categories, options);
+  } else if (options.graph === "os") {
+    return renderItemCard(operating_systems, options);
+  } else {
+    return renderItemCard(languages, options);
+  }
+};
+
+function renderItemCard(items, options) {
   const {
     hide_title = false,
     hide_border = false,
@@ -174,18 +188,18 @@ const renderWakatimeCard = (stats = {}, options = { hide: [] }) => {
     custom_title,
     locale,
     layout,
-    langs_count = languages ? languages.length : 0,
+    langs_count = items ? items.length : 0,
     border_radius,
     border_color,
   } = options;
 
   const shouldHideLangs = Array.isArray(hide) && hide.length > 0;
-  if (shouldHideLangs && languages !== undefined) {
+  if (shouldHideLangs && items !== undefined) {
     const languagesToHide = new Set(hide.map((lang) => lowercaseTrim(lang)));
-    languages = languages.filter(
+    items = items.filter(
       (lang) => !languagesToHide.has(lowercaseTrim(lang.name)),
     );
-    recalculatePercentages(languages);
+    recalculatePercentages(items);
   }
 
   const i18n = new I18n({
@@ -208,15 +222,13 @@ const renderWakatimeCard = (stats = {}, options = { hide: [] }) => {
       theme,
     });
 
-  const filteredLanguages = languages
-    ? languages
-        .filter((language) => language.hours || language.minutes)
-        .slice(0, langsCount)
+  const filteredItems = items
+    ? items.filter((item) => item.hours || item.minutes).slice(0, langsCount)
     : [];
 
   // Calculate the card height depending on how many items there are
   // but if rank circle is visible clamp the minimum height to `150`
-  let height = Math.max(45 + (filteredLanguages.length + 1) * lheight, 150);
+  let height = Math.max(45 + (filteredItems.length + 1) * lheight, 150);
 
   const cssStyles = getStyles({
     titleColor,
@@ -231,17 +243,17 @@ const renderWakatimeCard = (stats = {}, options = { hide: [] }) => {
   // RENDER COMPACT LAYOUT
   if (layout === "compact") {
     width = width + 50;
-    height = 90 + Math.round(filteredLanguages.length / 2) * 25;
+    height = 90 + Math.round(filteredItems.length / 2) * 25;
 
-    // progressOffset holds the previous language's width and used to offset the next language
+    // progressOffset holds the previous item's width and used to offset the next item
     // so that we can stack them one after another, like this: [--][----][---]
     let progressOffset = 0;
-    const compactProgressBar = filteredLanguages
-      .map((language) => {
+    const compactProgressBar = filteredItems
+      .map((item) => {
         // const progress = (width * lang.percent) / 100;
-        const progress = ((width - 25) * language.percent) / 100;
+        const progress = ((width - 25) * item.percent) / 100;
 
-        const languageColor = languageColors[language.name] || "#858585";
+        const itemColor = languageColors[item.name] || "#858585";
 
         const output = `
           <rect
@@ -251,7 +263,7 @@ const renderWakatimeCard = (stats = {}, options = { hide: [] }) => {
             y="0"
             width="${progress}"
             height="8"
-            fill="${languageColor}"
+            fill="${itemColor}"
           />
         `;
         progressOffset += progress;
@@ -267,19 +279,19 @@ const renderWakatimeCard = (stats = {}, options = { hide: [] }) => {
       ${createLanguageTextNode({
         x: 0,
         y: 25,
-        langs: filteredLanguages,
+        langs: filteredItems,
         totalSize: 100,
       }).join("")}
     `;
   } else {
     finalLayout = flexLayout({
-      items: filteredLanguages.length
-        ? filteredLanguages.map((language) => {
+      items: filteredItems.length
+        ? filteredItems.map((item) => {
             return createTextNode({
-              id: language.name,
-              label: language.name,
-              value: language.text,
-              percent: language.percent,
+              id: item.name,
+              label: item.name,
+              value: item.text,
+              percent: item.percent,
               // @ts-ignore
               progressBarColor: titleColor,
               // @ts-ignore
@@ -328,7 +340,7 @@ const renderWakatimeCard = (stats = {}, options = { hide: [] }) => {
       ${finalLayout}
     </svg>
   `);
-};
+}
 
 export { renderWakatimeCard };
 export default renderWakatimeCard;

@@ -34,6 +34,7 @@ export default async (req, res) => {
     range,
     border_radius,
     border_color,
+    graph,
   } = req.query;
 
   res.setHeader("Content-Type", "image/svg+xml");
@@ -75,6 +76,7 @@ export default async (req, res) => {
         locale: locale ? locale.toLowerCase() : null,
         layout,
         langs_count,
+        graph,
       }),
     );
   } catch (err) {
