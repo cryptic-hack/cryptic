@@ -367,6 +367,12 @@ export const themes = {
     text_color: "e0def4",
     bg_color: "191724",
   },
+  lamya: {
+    title_color: "bd70dc",
+    icon_color: "bb50de",
+    text_color: "D3D3D3",
+    bg_color: "0d0827",
+  },
 };
 
 export default themes;
