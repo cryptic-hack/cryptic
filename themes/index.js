@@ -367,6 +367,13 @@ export const themes = {
     text_color: "e0def4",
     bg_color: "191724",
   },
+  nu_disco: {
+    title_color: "54D0CD",
+    icon_color: "54D0CD",
+    text_color: "BDA8E6",
+    bg_color: "0C011F",
+  },
+
 };
 
 export default themes;
