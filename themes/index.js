@@ -456,6 +456,13 @@ export const themes = {
     border_color: "e1bc29",
     bg_color: "2b2d40",
   },
+  everforest_dark_medium: {
+    title_color: "a7c080",
+    text_color: "d3c6aa",
+    icon_color: "e67e80",
+    border_color: "859289",
+    bg_color: "2d353b"
+  },
 };
 
 export default themes;
