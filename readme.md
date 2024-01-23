@@ -167,6 +167,14 @@ You can pass a query parameter `&show=` to show any specific additional stats wi
 ![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=anuraghazra&show=reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage)
 ```
 
+### Specifying Year
+
+You can specify a year and fetch only the commits that were made in that year by passing `&year=YYYY` to the parameter.
+
+```md
+![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=anuraghazra&year=2020)
+```
+
 ### Showing icons
 
 To enable icons, you can pass `&show_icons=true` in the query param, like so:
@@ -383,6 +391,7 @@ If we don't support your language, please consider contributing! You can find mo
 | `ring_color` | Color of the rank circle. | string (hex color) | `2f80ed` |
 | `number_format` | Switches between two available formats for displaying the card values `short` (i.e. `6.6k`) and `long` (i.e. `6626`). | enum | `short` |
 | `show` | Shows [additional items](#showing-additional-individual-stats) on stats card (i.e. `reviews`, `discussions_started`, `discussions_answered`, `prs_merged` or `prs_merged_percentage`). | string (comma-separated values) | `null` |
+| `commits_year` | Count commits of the entire year | integer _(YYYY)_ | `<current year> (one year to date)`.
 
 > [!NOTE]\
 > When hide\_rank=`true`, the minimum card width is 270 px + the title length and padding.
